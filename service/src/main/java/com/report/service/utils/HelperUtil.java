@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import java.util.Arrays;
 import java.util.Date;
 
-@Component
+
 public class HelperUtil {
 
     private final PostDao postDao;
