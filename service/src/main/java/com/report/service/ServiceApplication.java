@@ -6,6 +6,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Profile;
 
 @SpringBootApplication
 @ComponentScan(basePackages = {"com.report.service"})
@@ -15,11 +16,12 @@ public class ServiceApplication {
         SpringApplication.run(ServiceApplication.class, args);
     }
 
-//   @Bean
-//   CommandLineRunner runner(HelperUtil helperUtil) {
-//       return args -> {
-//           // Call insertDemoData method from HelperUtil
-//           helperUtil.insertDemoData();
-//       };
-//   }
+    @Profile("!test") // Exclude from tests
+    @Bean
+    CommandLineRunner runner(HelperUtil helperUtil) {
+        return args -> {
+            // Call insertDemoData method from HelperUtil
+            helperUtil.insertDemoData();
+        };
+    }
 }
