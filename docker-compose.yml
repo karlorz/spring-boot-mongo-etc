@@ -22,7 +22,7 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: "admin"
       MONGO_INITDB_ROOT_PASSWORD: "password"
-#    volumes:
+#    volumes: #
 #      - $HOME/mongo:/data/db
     healthcheck:
       test: "exit 0"
