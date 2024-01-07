@@ -29,12 +29,6 @@ jobs:
       - name: Package Application
         run: mkdir staging && cp service/target/*.jar staging
       # Step 5
-      # - name: Upload Artifact
-      #   uses: actions/upload-artifact@v3
-      #   with:
-      #     name: Package
-      #     path: staging
-      # Step 6-
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
