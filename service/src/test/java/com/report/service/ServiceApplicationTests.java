@@ -10,6 +10,9 @@ class ServiceApplicationTests {
 	void contextLoads() {
 		// Set the system property to skip the demo data insertion
 		System.setProperty("skipDemoData", "true");
+
+		// Unset or reset the system property after the test
+		System.clearProperty("skipDemoData");
 	}
 
 }
