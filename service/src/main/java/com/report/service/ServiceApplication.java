@@ -15,11 +15,11 @@ public class ServiceApplication {
         SpringApplication.run(ServiceApplication.class, args);
     }
 
-//    @Bean
-//    CommandLineRunner runner(HelperUtil helperUtil) {
-//        return args -> {
-//            // Call insertDemoData method from HelperUtil
-//            helperUtil.insertDemoData();
-//        };
-//    }
+   @Bean
+   CommandLineRunner runner(HelperUtil helperUtil) {
+       return args -> {
+           // Call insertDemoData method from HelperUtil
+           helperUtil.insertDemoData();
+       };
+   }
 }
