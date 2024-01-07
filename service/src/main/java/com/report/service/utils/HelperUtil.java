@@ -4,11 +4,12 @@ import com.report.service.dao.PostDao;
 import com.report.service.model.PostModal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
+import lombok.extern.slf4j.Slf4j;
 import java.util.Arrays;
 import java.util.Date;
 
 @Component
+@Slf4j
 public class HelperUtil {
 
     private final PostDao postDao;
@@ -32,9 +33,9 @@ public class HelperUtil {
 
             // Add more demo data as needed
 
-            System.out.println("Demo data inserted successfully!");
+            log.info("Demo data inserted successfully!");
         } else {
-            System.out.println("Data already exists in the database.");
+            log.info("Data already exists in the database.");
         }
     }
 
