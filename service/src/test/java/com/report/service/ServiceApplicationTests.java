@@ -8,6 +8,8 @@ class ServiceApplicationTests {
 
 	@Test
 	void contextLoads() {
+		// Set the system property to skip the demo data insertion
+		System.setProperty("skipDemoData", "true");
 	}
 
 }

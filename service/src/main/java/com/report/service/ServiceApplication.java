@@ -16,12 +16,15 @@ public class ServiceApplication {
         SpringApplication.run(ServiceApplication.class, args);
     }
 
-    @Profile("!test") // Exclude from tests
+
     @Bean
     CommandLineRunner runner(HelperUtil helperUtil) {
         return args -> {
-            // Call insertDemoData method from HelperUtil
-            helperUtil.insertDemoData();
+            // Check if the system property indicates to skip the demo data insertion
+            if (!Boolean.getBoolean("skipDemoData")) {
+                // Call insertDemoData method from HelperUtil
+                helperUtil.insertDemoData();
+            }
         };
     }
 }
