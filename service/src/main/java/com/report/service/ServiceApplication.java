@@ -19,8 +19,8 @@ public class ServiceApplication {
     @Bean
     CommandLineRunner runner(HelperUtil helperUtil, Environment environment) {
         return args -> {
-            // Check if the system property or environment property indicates to skip the demo data insertion
-            if (Boolean.parseBoolean(environment.getProperty("skipDemoData", "false"))) {
+            // Check if the system property indicates to skip the demo data insertion
+            if (!Boolean.getBoolean("skipDemoData")) {
                 // Call insertDemoData method from HelperUtil
                 helperUtil.insertDemoData();
             }
