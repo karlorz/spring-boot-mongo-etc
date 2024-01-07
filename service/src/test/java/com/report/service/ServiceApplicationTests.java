@@ -7,9 +7,10 @@ import lombok.extern.slf4j.Slf4j;
 @SpringBootTest
 @Slf4j
 class ServiceApplicationTests {
-	log.info("begin test");
+
 	@Test
 	void contextLoads() {
+		log.info("begin test");
 		// Set the system property to skip the demo data insertion
 		System.setProperty("skipDemoData", "true");
 
