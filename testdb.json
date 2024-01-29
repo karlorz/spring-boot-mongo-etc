@@ -1,0 +1,20 @@
+{
+    "systems": [
+        {
+            "name": "AHU-2-01",
+            "reports": {
+                "FDDA1-01": 50,
+                "FDDA1-04": 4,
+                "FDDA1-05": -1
+            }
+        },
+        {
+            "name": "AHU-2M-04",
+            "reports": {
+                "FDDA1-01": 0,
+                "FDDA1-04": -1,
+                "FDDA1-05": -1
+            }
+        }
+    ]
+}
