@@ -10,7 +10,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.TestPropertySource;
 import lombok.extern.slf4j.Slf4j;
@@ -65,9 +67,7 @@ class ServiceApplicationTests {
 	void getByProfile_ReturnsThePost() {
 
 		final String profile ="Java-dev";
-
 		RestTemplate restTemplate = new RestTemplate();
-
 		String resourceUrl= "http://localhost:"+port+"/posts/{profile}";
 
 		// Fetch response as List wrapped in ResponseEntity
@@ -79,12 +79,42 @@ class ServiceApplicationTests {
 
 		Post post = getByProfile.getBody();
 
-
 		assertThat(post).isNotNull();
-		assertThat(post.getProfile()).isEqualTo("Java-dev");
+        assert post != null;
+        assertThat(post.getProfile()).isEqualTo("Java-dev");
 		assertThat(post.getType()).isEqualTo("Full-time");
 		assertThat(post.getTechnology()).isEqualTo(new String[]{"Java", "Spring Boot"});
 		assertThat(post.getSalary()).isEqualTo("100000");
+	}
+
+	@Test
+	void updatePost_ReturnsThePost() {
+		final String profile ="Java-dev";
+		Post postToUpdate = new Post();
+		postToUpdate.setProfile(profile);
+		postToUpdate.setType("Part-time");
+		postToUpdate.setTechnology(new String[]{"Python", "Spring Boot"});
+		postToUpdate.setSalary("9999");
+
+		RestTemplate restTemplate = new RestTemplate();
+		String resourceUrl= "http://localhost:"+port+"/posts/{profile}";
+
+		// Make the PUT request
+		ResponseEntity<Post> updatedResponse = restTemplate.exchange(
+				resourceUrl,
+				HttpMethod.PUT,
+				new HttpEntity<>(postToUpdate),
+				new ParameterizedTypeReference<Post>() {},
+				profile);
+
+		// Verify the response
+		assertThat(updatedResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+		Post updatedPost = updatedResponse.getBody();
+		assertThat(updatedPost).isNotNull();
+		assertThat(updatedPost.getProfile()).isEqualTo(profile);
+		assertThat(updatedPost.getType()).isEqualTo("Part-time");
+		assertThat(updatedPost.getTechnology()).isEqualTo(new String[]{"Python", "Spring Boot"});
+		assertThat(updatedPost.getSalary()).isEqualTo("9999");
 	}
 
 }

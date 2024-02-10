@@ -37,4 +37,20 @@ public class PostServiceImpl implements PostService{
         return postRepository.save(post);
     }
 
+    @Override
+    public Post updatePost(Post post){
+        Optional<Post> postDb =postRepository.getByProfile(post.getProfile());
+        if(postDb.isPresent()) {
+            Post postUpdate = postDb.get();
+            postUpdate.setProfile(post.getProfile());
+            postUpdate.setType(post.getType());
+            postUpdate.setTechnology(post.getTechnology());
+            postUpdate.setSalary(post.getSalary());
+            postRepository.save(postUpdate);
+            return postUpdate;
+        }else {
+            throw new ResourceNotFoundException("Record not found with profile : " + post.getProfile());
+        }
+    }
+
 }

@@ -11,4 +11,6 @@ public interface PostService {
 
     List<Post> getAllPosts();
     Post createPost(Post post);
+
+    Post updatePost(Post post);
 }

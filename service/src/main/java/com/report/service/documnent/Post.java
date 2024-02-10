@@ -15,26 +15,21 @@ import java.util.Date;
 
 @Document(collection = "posts")
 @TypeAlias("PostModal")
+@Setter
+@Getter
 @Data
-//@Component
-//@ComponentScan(basePackages = {"com.report.service"})
 public class Post {
 
-    @Setter
-    @Getter
     @NotNull
     @NotEmpty
     private String profile;
-    @Setter
-    @Getter
+
     @NotNull
     private String type;
-    @Setter
-    @Getter
+
     @NotNull
     private String[] technology;
-    @Setter
-    @Getter
+
     @NotNull
     private String salary;
     @CreatedDate

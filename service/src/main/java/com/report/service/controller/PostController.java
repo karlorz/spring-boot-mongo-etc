@@ -36,6 +36,12 @@ public class PostController {
     @PostMapping("/posts")
     public Post createPost(@Valid @RequestBody Post post) {
         log.info("Saving post #####");
-        return this.postService.createPost(post);
+        return postService.createPost(post);
     }
+    @PutMapping("/posts/{profile}")
+    public Post updatePost(@Valid @PathVariable String profile,@Valid @RequestBody Post post) {
+        post.setProfile(profile);
+        return postService.updatePost(post);
+    }
+
 }
