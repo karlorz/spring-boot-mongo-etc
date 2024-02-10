@@ -14,8 +14,8 @@ import java.util.Date;
 @Document(collection = "posts")
 @TypeAlias("PostModal")
 @Data
-@Component
-@ComponentScan(basePackages = {"com.report.service"})
+//@Component
+//@ComponentScan(basePackages = {"com.report.service"})
 public class Post {
 
     @NotNull

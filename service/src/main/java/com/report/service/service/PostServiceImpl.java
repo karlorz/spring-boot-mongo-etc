@@ -12,10 +12,9 @@ import java.util.Optional;
 @Service
 public class PostServiceImpl implements PostService{
 
-//    @Autowired
-//    PostRepository postRepository;
     private final PostRepository postRepository;
 
+    @Autowired
     public PostServiceImpl(PostRepository postRepository) {
         this.postRepository = postRepository;
     }

@@ -1,10 +1,8 @@
 package com.report.service.controller;
 
 import com.report.service.documnent.Post;
-import com.report.service.repository.PostRepository;
 import com.report.service.service.PostService;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -14,11 +12,11 @@ import java.util.List;
 @RestController
 @CrossOrigin
 @Slf4j
-//@RequiredArgsConstructor
 public class PostController {
 
     private final PostService postService;
 
+    @Autowired
     public PostController(PostService postService) {
         this.postService = postService;
     }
