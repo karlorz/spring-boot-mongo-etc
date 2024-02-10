@@ -1,35 +1,35 @@
 package com.report.service.utils;
 
-import com.report.service.dao.PostDao;
-import com.report.service.model.PostModal;
+import com.report.service.repository.PostRepository;
+import com.report.service.documnent.Post;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import lombok.extern.slf4j.Slf4j;
-import java.util.Arrays;
+
 import java.util.Date;
 
 @Component
 @Slf4j
 public class HelperUtil {
 
-    private final PostDao postDao;
+    private final PostRepository postRepository;
 
     @Autowired
-    public HelperUtil(PostDao postDao) {
-        this.postDao = postDao;
+    public HelperUtil(PostRepository postRepository) {
+        this.postRepository = postRepository;
     }
 
     public void insertDemoData() {
         // Check if there is existing data
-        if (postDao.count() == 0) {
+        if (postRepository.count() == 0) {
             // Insert demo data
-            PostModal post1 = createPost("John Doe", "Full-time", "Exciting job opportunity", "3 years of experience",
+            Post post1 = new Post("John Doe", "Full-time",
                     new String[]{"Java", "Spring Boot"}, "100000");
-            postDao.save(post1);
+            postRepository.save(post1);
 
-            PostModal post2 = createPost("Jane Smith", "Part-time", "Internship position", "1 year of experience",
+            Post post2 = new Post("Jane Smith", "Part-time",
                     new String[]{"Python", "Django"}, "999");
-            postDao.save(post2);
+            postRepository.save(post2);
 
             // Add more demo data as needed
 
@@ -37,18 +37,5 @@ public class HelperUtil {
         } else {
             log.info("Data already exists in the database.");
         }
-    }
-
-    private PostModal createPost(String profile, String type, String description, String experience,
-                                 String[] technology, String salary) {
-        PostModal post = new PostModal();
-        post.setProfile(profile);
-        post.setType(type);
-        post.setDescription(description);
-        post.setExperience(experience);
-        post.setTechnology(technology);
-        post.setSalary(salary);
-        post.setCreatedAt(new Date());
-        return post;
     }
 }

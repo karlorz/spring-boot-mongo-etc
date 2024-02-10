@@ -1,13 +1,14 @@
 package com.report.service.service;
 
-import com.report.service.dto.PostDTO;
-import com.report.service.model.PostModal;
+import com.report.service.documnent.Post;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface PostService {
 
-    public List<PostModal> getAllPosts();
+    Post getByProfile(String profile);
 
-    public PostModal savePost(PostDTO post);
+    List<Post> getAllPosts();
+    Post createPost(Post post);
 }

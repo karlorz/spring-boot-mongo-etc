@@ -1,8 +1,7 @@
 package com.report.service.controller;
 
-import com.report.service.constants.APIConstants;
-import com.report.service.dto.PostDTO;
-import com.report.service.model.PostModal;
+import com.report.service.documnent.Post;
+import com.report.service.repository.PostRepository;
 import com.report.service.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -15,21 +14,29 @@ import java.util.List;
 @RestController
 @CrossOrigin
 @Slf4j
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 public class PostController {
 
+    private final PostService postService;
 
-    final PostService postService;
-
-    @GetMapping(APIConstants.GET_ALL_POSTS)
-    public List<PostModal> getAllPosts() {
-        log.info("Getting all the posts #####");
-        return this.postService.getAllPosts();
+    public PostController(PostService postService) {
+        this.postService = postService;
     }
 
-    @PostMapping(APIConstants.SAVE_POST)
-    public PostModal savePost(@Valid @RequestBody PostDTO postDTORequest) {
+    @GetMapping("/posts/{profile}")
+    public Post getPostByProfile(@PathVariable String profile) {
+        return postService.getByProfile(profile);
+    }
+
+    @GetMapping("/posts")
+    public List<Post> getAllPosts() {
+        log.info("Getting all the posts #####");
+        return postService.getAllPosts();
+    }
+
+    @PostMapping("/posts")
+    public Post createPost(@Valid @RequestBody Post post) {
         log.info("Saving post #####");
-        return this.postService.savePost(postDTORequest);
+        return this.postService.createPost(post);
     }
 }

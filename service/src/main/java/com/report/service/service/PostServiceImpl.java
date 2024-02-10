@@ -1,35 +1,41 @@
 package com.report.service.service;
 
-import com.report.service.dao.PostDao;
-import com.report.service.dto.PostDTO;
-import com.report.service.model.PostModal;
+import com.report.service.exception.ResourceNotFoundException;
+import com.report.service.repository.PostRepository;
+import com.report.service.documnent.Post;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PostServiceImpl implements PostService{
 
-    @Autowired
-    PostDao postDao;
+//    @Autowired
+//    PostRepository postRepository;
+    private final PostRepository postRepository;
 
-    @Override
-    public List<PostModal> getAllPosts() {
-        return postDao.findAll();
+    public PostServiceImpl(PostRepository postRepository) {
+        this.postRepository = postRepository;
     }
 
     @Override
-    public PostModal savePost(PostDTO postDTO) {
-        PostModal postModal = new PostModal();
-
-        postModal.setProfile(postDTO.getProfile());
-        postModal.setType(postDTO.getType());
-        postModal.setSalary(postDTO.getSalary());
-        postModal.setExperience(postDTO.getExperience());
-        postModal.setDescription(postDTO.getDescription());
-        postModal.setTechnology(postDTO.getTechnology());
-
-        return postDao.save(postModal);
+    public Post getByProfile(String profile) {
+        Optional<Post> postDb =postRepository.getByProfile(profile);
+        if(postDb.isPresent()) {
+            return postDb.get();
+        }else {
+            throw new ResourceNotFoundException("Record not found with id : " + profile);
+        }
     }
+    @Override
+    public List<Post> getAllPosts() {
+        return postRepository.findAll();
+    }
+    @Override
+    public Post createPost(Post post) {
+        return postRepository.save(post);
+    }
+
 }
