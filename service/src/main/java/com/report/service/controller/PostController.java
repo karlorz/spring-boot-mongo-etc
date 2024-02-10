@@ -25,6 +25,7 @@ public class PostController {
 
     @GetMapping("/posts/{profile}")
     public Post getPostByProfile(@PathVariable String profile) {
+        log.info("Getting post by profile #####");
         return postService.getByProfile(profile);
     }
 

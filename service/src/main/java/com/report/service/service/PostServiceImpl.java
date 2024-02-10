@@ -26,7 +26,7 @@ public class PostServiceImpl implements PostService{
         if(postDb.isPresent()) {
             return postDb.get();
         }else {
-            throw new ResourceNotFoundException("Record not found with id : " + profile);
+            throw new ResourceNotFoundException("Record not found with profile : " + profile);
         }
     }
     @Override
