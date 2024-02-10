@@ -111,7 +111,8 @@ class ServiceApplicationTests {
 		assertThat(updatedResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
 		Post updatedPost = updatedResponse.getBody();
 		assertThat(updatedPost).isNotNull();
-		assertThat(updatedPost.getProfile()).isEqualTo(profile);
+        assert updatedPost != null;
+        assertThat(updatedPost.getProfile()).isEqualTo(profile);
 		assertThat(updatedPost.getType()).isEqualTo("Part-time");
 		assertThat(updatedPost.getTechnology()).isEqualTo(new String[]{"Python", "Spring Boot"});
 		assertThat(updatedPost.getSalary()).isEqualTo("9999");
