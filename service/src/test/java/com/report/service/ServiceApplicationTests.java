@@ -10,22 +10,23 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.test.context.TestPropertySource;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.testcontainers.containers.MongoDBContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.Arrays;
 import java.util.List;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.fail;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource(properties = {"skipDemoData=true"})
@@ -42,7 +43,7 @@ class ServiceApplicationTests {
 	@Container
 	@ServiceConnection
 	public static MongoDBContainer mongoDBContainer =
-			new MongoDBContainer(DockerImageName.parse("mongo:6.0.12"));
+			new MongoDBContainer(DockerImageName.parse("mongo:6"));
 	@BeforeAll
 	static void setup(@Autowired PostRepository postRepository) {
 
@@ -57,39 +58,104 @@ class ServiceApplicationTests {
 		postRepository.saveAll(posts);
 
 	}
-//	@Test
-//	void contextLoads() {
-//		log.info("begin test");
-//		// Your test logic here
-//	}
+
+	@Test
+	void sayHello_ReturnsHelloWorld() {
+		RestTemplate restTemplate = new RestTemplate();
+		String resourceUrl = "http://localhost:" + port + "/sayhello";
+		String response = restTemplate.getForObject(resourceUrl, String.class);
+		assertThat(response).isEqualTo("Hello World!");
+	}
+
+	@Test
+	void testInvalidCredentials() {
+		RestTemplate restTemplate = new RestTemplate();
+		String loginUrl = "http://localhost:" + port + "/login";
+		try {
+			ResponseEntity<String> response = restTemplate.postForEntity(loginUrl, "{\"username\": \"user\", \"password\": \"wrongpassword\"}", String.class);
+			fail("Expected HttpClientErrorException$Unauthorized to be thrown");
+		} catch (HttpClientErrorException.Unauthorized ex) {
+			assertThat(ex.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
+			assertThat(ex.getResponseBodyAsString()).isEqualTo("");
+		}
+	}
+
+	@Test
+	void testValidCredentials() {
+		RestTemplate restTemplate = new RestTemplate();
+		String loginUrl = "http://localhost:" + port + "/login";
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+		MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
+		formData.add("username", "user");
+		formData.add("password", "password");
+
+		HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(formData, headers);
+
+		try {
+			ResponseEntity<String> response = restTemplate.postForEntity(loginUrl, requestEntity, String.class);
+			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+			// Add assertions for the response body or further processing as needed
+		} catch (HttpClientErrorException.Unauthorized ex) {
+			fail("Expected successful response, but got HttpClientErrorException$Unauthorized");
+		}
+	}
 
 	@Test
 	void getByProfile_ReturnsThePost() {
-
-		final String profile ="Java-dev";
+		final String profile = "Java-dev";
 		RestTemplate restTemplate = new RestTemplate();
-		String resourceUrl= "http://localhost:"+port+"/posts/{profile}";
+		String resourceUrl = "http://localhost:" + port + "/api/posts/{profile}";
 
-		// Fetch response as List wrapped in ResponseEntity
-		ResponseEntity<Post> getByProfile = restTemplate.exchange(
-				resourceUrl,
-				HttpMethod.GET,
-				null,
-				new ParameterizedTypeReference<Post>(){},profile);
+		String loginUrl = "http://localhost:" + port + "/login";
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
-		Post post = getByProfile.getBody();
+		MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
+		formData.add("username", "user");
+		formData.add("password", "password");
 
-		assertThat(post).isNotNull();
-        assert post != null;
-        assertThat(post.getProfile()).isEqualTo("Java-dev");
-		assertThat(post.getType()).isEqualTo("Full-time");
-		assertThat(post.getTechnology()).isEqualTo(new String[]{"Java", "Spring Boot"});
-		assertThat(post.getSalary()).isEqualTo("100000");
+		HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(formData, headers);
+
+		try {
+			ResponseEntity<String> response = restTemplate.postForEntity(loginUrl, requestEntity, String.class);
+
+			// Retrieve the session ID from the response cookies
+			String sessionId = response.getHeaders().getFirst(HttpHeaders.SET_COOKIE);
+
+			// Create a new HttpHeaders object and set the session ID as a cookie
+			HttpHeaders sessionHeaders = new HttpHeaders();
+			sessionHeaders.set(HttpHeaders.COOKIE, sessionId);
+
+			// Create a new HttpEntity with the session headers
+			HttpEntity<Void> sessionEntity = new HttpEntity<>(sessionHeaders);
+
+			// Fetch response as Post object wrapped in ResponseEntity, including the session headers
+			ResponseEntity<Post> getByProfile = restTemplate.exchange(
+					resourceUrl,
+					HttpMethod.GET,
+					sessionEntity,
+					Post.class,
+					profile
+			);
+
+			Post post = getByProfile.getBody();
+
+			assertThat(post).isNotNull();
+			assertThat(post.getProfile()).isEqualTo("Java-dev");
+			assertThat(post.getType()).isEqualTo("Full-time");
+			assertThat(post.getTechnology()).isEqualTo(new String[]{"Java", "Spring Boot"});
+			assertThat(post.getSalary()).isEqualTo("100000");
+		} catch (HttpClientErrorException.Unauthorized ex) {
+			fail("Expected successful response, but got HttpClientErrorException$Unauthorized");
+		}
 	}
 
 	@Test
 	void updatePost_ReturnsThePost() {
-		final String profile ="Java-dev";
+		final String profile = "Java-dev";
 		Post postToUpdate = new Post();
 		postToUpdate.setProfile(profile);
 		postToUpdate.setType("Part-time");
@@ -97,25 +163,45 @@ class ServiceApplicationTests {
 		postToUpdate.setSalary("9999");
 
 		RestTemplate restTemplate = new RestTemplate();
-		String resourceUrl= "http://localhost:"+port+"/posts/{profile}";
+		String resourceUrl = "http://localhost:" + port + "/api/posts/{profile}";
 
-		// Make the PUT request
+		String loginUrl = "http://localhost:" + port + "/login";
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+		MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
+		formData.add("username", "user");
+		formData.add("password", "password");
+
+		HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(formData, headers);
+		ResponseEntity<String> response = restTemplate.postForEntity(loginUrl, requestEntity, String.class);
+
+		// Retrieve the session ID from the response cookies
+		String sessionId = response.getHeaders().getFirst(HttpHeaders.SET_COOKIE);
+
+		// Create a new HttpHeaders object and set the session ID as a cookie
+		HttpHeaders sessionHeaders = new HttpHeaders();
+		sessionHeaders.set(HttpHeaders.COOKIE, sessionId);
+
+		// Create a new HttpEntity with the session headers and the post to update
+		HttpEntity<Post> requestEntityWithSession = new HttpEntity<>(postToUpdate, sessionHeaders);
+
+		// Make the PUT request with the session headers and the updated post
 		ResponseEntity<Post> updatedResponse = restTemplate.exchange(
 				resourceUrl,
 				HttpMethod.PUT,
-				new HttpEntity<>(postToUpdate),
-				new ParameterizedTypeReference<Post>() {},
-				profile);
+				requestEntityWithSession,
+				Post.class,
+				profile
+		);
 
 		// Verify the response
 		assertThat(updatedResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
 		Post updatedPost = updatedResponse.getBody();
 		assertThat(updatedPost).isNotNull();
-        assert updatedPost != null;
-        assertThat(updatedPost.getProfile()).isEqualTo(profile);
+		assertThat(updatedPost.getProfile()).isEqualTo(profile);
 		assertThat(updatedPost.getType()).isEqualTo("Part-time");
 		assertThat(updatedPost.getTechnology()).isEqualTo(new String[]{"Python", "Spring Boot"});
 		assertThat(updatedPost.getSalary()).isEqualTo("9999");
 	}
-
 }

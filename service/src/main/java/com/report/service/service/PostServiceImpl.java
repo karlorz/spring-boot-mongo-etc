@@ -42,7 +42,7 @@ public class PostServiceImpl implements PostService{
         Optional<Post> postDb =postRepository.getByProfile(post.getProfile());
         if(postDb.isPresent()) {
             Post postUpdate = postDb.get();
-            postUpdate.setProfile(post.getProfile());
+//            postUpdate.setProfile(post.getProfile());
             postUpdate.setType(post.getType());
             postUpdate.setTechnology(post.getTechnology());
             postUpdate.setSalary(post.getSalary());

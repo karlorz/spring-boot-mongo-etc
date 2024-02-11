@@ -12,6 +12,7 @@ import java.util.List;
 @RestController
 @CrossOrigin
 @Slf4j
+@RequestMapping("/api/posts")
 public class PostController {
 
     private final PostService postService;
@@ -21,25 +22,26 @@ public class PostController {
         this.postService = postService;
     }
 
-    @GetMapping("/posts/{profile}")
+    @GetMapping("/{profile}")
     public Post getPostByProfile(@PathVariable String profile) {
         log.info("Getting post by profile #####");
         return postService.getByProfile(profile);
     }
 
-    @GetMapping("/posts")
+    @GetMapping
     public List<Post> getAllPosts() {
         log.info("Getting all the posts #####");
         return postService.getAllPosts();
     }
 
-    @PostMapping("/posts")
+    @PostMapping
     public Post createPost(@Valid @RequestBody Post post) {
         log.info("Saving post #####");
         return postService.createPost(post);
     }
-    @PutMapping("/posts/{profile}")
-    public Post updatePost(@Valid @PathVariable String profile,@Valid @RequestBody Post post) {
+    @PutMapping("/{profile}")
+    public Post updatePost(@PathVariable String profile,@Valid @RequestBody Post post) {
+        log.info("Updating post #####");
         post.setProfile(profile);
         return postService.updatePost(post);
     }
