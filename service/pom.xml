@@ -78,7 +78,7 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
-					<image>c
+					<image>
 						<builder>paketobuildpacks/builder-jammy-base:latest</builder>
 					</image>
 					<excludes>
