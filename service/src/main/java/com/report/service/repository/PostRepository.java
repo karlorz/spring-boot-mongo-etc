@@ -13,6 +13,7 @@ public interface PostRepository extends MongoRepository<Post, String> {
             "{$sort: { _id: -1 }}",
             "{$limit: 1}"
     })
+//    @Query("{profile : ?0}")
     Optional<Post> getByProfile(String profile);
 
 }
