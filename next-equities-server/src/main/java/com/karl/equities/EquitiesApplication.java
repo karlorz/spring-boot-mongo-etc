@@ -2,6 +2,8 @@ package com.karl.equities;
 
 import com.karl.equities.auth.AuthenticationService;
 import com.karl.equities.auth.RegisterRequest;
+import com.karl.equities.book.BookRequest;
+import com.karl.equities.book.BookService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -21,7 +23,8 @@ public class EquitiesApplication {
 
 	@Bean
 	public CommandLineRunner commandLineRunner(
-			AuthenticationService service
+			AuthenticationService service,
+			BookService bookService
 	) {
 		return args -> {
 			var admin = RegisterRequest.builder()
@@ -39,6 +42,20 @@ public class EquitiesApplication {
 					.role(MANAGER)
 					.build();
 			System.out.println("Manager token: " + service.register(manager).getAccessToken());
+
+			var book1 = BookRequest.builder()
+					.author("John Doe")
+					.isbn("1234567890")
+					.build();
+			bookService.save(book1);
+			System.out.println("Book 1: "+ book1.getAuthor());
+
+			var book2 = BookRequest.builder()
+					.author("Jane Smith")
+					.isbn("0987654321")
+					.build();
+			bookService.save(book2);
+			System.out.println("Book 2: "+ book2.getAuthor());
 
 		};
 	}

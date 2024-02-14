@@ -16,6 +16,7 @@ public class BookService {
                 .id(request.getId())
                 .author(request.getAuthor())
                 .isbn(request.getIsbn())
+                .createdBy(1)
                 .build();
         repository.save(book);
     }
