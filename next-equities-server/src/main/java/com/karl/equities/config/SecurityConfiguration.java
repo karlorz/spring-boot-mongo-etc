@@ -39,10 +39,7 @@ public class SecurityConfiguration {
 
     private static final String[] WHITE_LIST_URL = {
             "/sayhello",
-<<<<<<< HEAD
-=======
             "/api/v2/**",
->>>>>>> dev
             "/api/v1/auth/**",
             "/v2/api-docs",
             "/v3/api-docs",
