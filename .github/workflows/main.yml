@@ -24,10 +24,10 @@ jobs:
           distribution: 'temurin'
       # Step 3
       - name: Build Application and Run unit Test
-        run: mvn --batch-mode --update-snapshots verify --file service/pom.xml
+        run: mvn --batch-mode --update-snapshots verify --file next-equities-server/pom.xml
       # Step 4
       - name: Package Application
-        run: mkdir staging && cp service/target/*.jar staging
+        run: mkdir staging && cp next-equities-server/target/*.jar staging
       # Step 5
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
