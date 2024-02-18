@@ -6,7 +6,7 @@ services:
       context: next-equities-server
     restart: always
     ports:
-      - 8080:8080
+      - 80:8080
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/next-equities
     #   SPRING_DATASOURCE_USERNAME: ${DB_USER:-username}
