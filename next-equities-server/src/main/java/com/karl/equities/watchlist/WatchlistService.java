@@ -1,27 +1,35 @@
-package com.karl.equities.book;
+package com.karl.equities.watchlist;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class BookService {
+public class WatchlistService {
 
-    private final BookRepository repository;
+    private final WatchlistRepository repository;
 
-    public void save(BookRequest request) {
-        var book = Book.builder()
+    public void save(WatchlistRequest request) {
+        var watchlist = Watchlist.builder()
                 .id(request.getId())
-                .author(request.getAuthor())
-                .isbn(request.getIsbn())
+                .issue(request.getIssue())
                 .createdBy(1)
                 .build();
-        repository.save(book);
+        repository.save(watchlist);
     }
 
-    public List<Book> findAll() {
+    public List<Watchlist> findAll() {
         return repository.findAll();
+    }
+
+    public Optional<Watchlist> findById(Integer watchlistId) {
+        return repository.findById(watchlistId);
+    }
+
+    public void deleteById(Integer watchlistId) {
+        repository.deleteById(watchlistId);
     }
 }

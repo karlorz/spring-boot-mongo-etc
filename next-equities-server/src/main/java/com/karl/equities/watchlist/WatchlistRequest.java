@@ -1,4 +1,4 @@
-package com.karl.equities.book;
+package com.karl.equities.watchlist;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -7,9 +7,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class BookRequest {
+public class WatchlistRequest {
 
     private Integer id;
-    private String author;
-    private String isbn;
+    private String issue;
 }
