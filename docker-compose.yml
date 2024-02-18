@@ -1,28 +1,39 @@
 version: '3.8'
 services:
-  service:
-    container_name: service
+  server:
+    container_name: next-equities-server
     build:
-      context: service
+      context: next-equities-server
     restart: always
     ports:
       - 8080:8080
     environment:
-      SPRING_DATA_MONGODB_HOST: mongo6
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/next-equities
+      SPRING_DATASOURCE_USERNAME: ${DB_USER:-username}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD:-password}
     healthcheck:
       test: "exit 0"
     depends_on:
-      - mongo6
-  mongo6:
-    image: mongo:6
-    container_name: mongo6
-    restart: always
-    ports:
-      - 27017:27017
+      - postgres
+  postgres:
+    container_name: postgres-sql
+    image: postgres
     environment:
-      MONGO_INITDB_ROOT_USERNAME: ${DB_USER}
-      MONGO_INITDB_ROOT_PASSWORD: ${DB_PASSWORD}
-#    volumes: #
-#      - $HOME/mongo:/data/db
-    healthcheck:
-      test: "exit 0"
+      POSTGRES_USER: ${DB_USER:-username}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-password}
+      PGDATA: /data/postgres
+      POSTGRES_DB: ${DB_PG:-next-equities}
+    volumes:
+      - postgres:/data/postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - postgres
+    restart: unless-stopped
+
+networks:
+  postgres:
+    driver: bridge
+
+volumes:
+  postgres:

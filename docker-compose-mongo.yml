@@ -1,0 +1,28 @@
+version: '3.8'
+services:
+  service:
+    container_name: service
+    build:
+      context: service
+    restart: always
+    ports:
+      - 8080:8080
+    environment:
+      SPRING_DATA_MONGODB_HOST: mongo6
+    healthcheck:
+      test: "exit 0"
+    depends_on:
+      - mongo6
+  mongo6:
+    image: mongo:6
+    container_name: mongo6
+    restart: always
+    ports:
+      - 27017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${DB_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${DB_PASSWORD}
+#    volumes: #
+#      - $HOME/mongo:/data/db
+    healthcheck:
+      test: "exit 0"
