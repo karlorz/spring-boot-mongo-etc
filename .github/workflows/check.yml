@@ -1,0 +1,25 @@
+name: CI/CD Pipeline
+on:
+  pull_request:
+    branches:
+      - main
+    # Sequence of patterns matched against refs/tags
+
+jobs:
+  continuous-integration:
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      # Step 1
+      - uses: actions/checkout@v4
+      # Step 2
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+      # Step 3
+      - name: Build Application and Run unit Test
+        run: mvn --batch-mode --update-snapshots verify --file next-equities-server/pom.xml
