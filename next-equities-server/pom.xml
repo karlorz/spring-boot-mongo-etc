@@ -114,5 +114,15 @@
 			</plugin>
 		</plugins>
 	</build>
-
+	<profiles>
+		<profile>
+			<id>local</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<activeProfile>local</activeProfile>
+			</properties>
+		</profile>
+	</profiles>
 </project>
