@@ -3,8 +3,8 @@ services:
     container_name: postgres-sql
     image: postgres
     environment:
-      POSTGRES_USER: ${DB_USER:-username}
-      POSTGRES_PASSWORD: ${DB_PASSWORD:-password}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
       PGDATA: /data/postgres
       POSTGRES_DB: ${DB_PG:-next-equities}
     volumes:
