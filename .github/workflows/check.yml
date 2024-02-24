@@ -1,4 +1,4 @@
-name: CI/CD Pipeline
+name: checkout & test
 on:
   pull_request:
     branches:
